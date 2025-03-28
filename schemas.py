@@ -103,7 +103,8 @@ class ChunkJson(BaseModel):
 
 
 class HuggingChatData(BaseModel):
-    type: str = Literal["status", "title", "tool", "file", "stream", "finalAnswer"]
+    type: str = Literal["status", "title", "tool", "file", "stream", "finalAnswer", "reasoning"]
+    subtype: Optional[str] = None
     token: Optional[str] = None
     name: Optional[str] = None
     sha: Optional[str] = None

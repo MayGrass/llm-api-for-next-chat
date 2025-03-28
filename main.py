@@ -237,7 +237,7 @@ async def openai_chat_completions(
             return JSONResponse(json.loads(await response.aread()), status_code=response.status_code)
 
         async def content_generator():
-            openai_data = openai_data = get_openai_chunk_response(model)
+            openai_data = get_openai_chunk_response(model)
             yield (f"data: {openai_data.model_dump_json(exclude_unset=True)}\n\n" if stream else "")
 
             accumulated_response_text = ""
@@ -249,9 +249,10 @@ async def openai_chat_completions(
                     raise HTTPException(status_code=400, detail="Error parsing response")
                 yield_line = None
                 match data.type:
-                    case "stream":
-                        yield_line = data.token.replace(accumulated_response_text, "").replace("\u0000", "")
-                        accumulated_response_text = data.token
+                    case "stream" | "reasoning":
+                        if data.token:
+                            yield_line = data.token.replace(accumulated_response_text, "").replace("\u0000", "")
+                            accumulated_response_text = data.token
                     case "file":
                         # download image to generated_images folder and return markdown image
                         image = await hf_chat.generate_image(data.sha)

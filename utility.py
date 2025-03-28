@@ -79,8 +79,10 @@ def update_nextchat_custom_models(models: list[str], delete_models: list[str] = 
             suffix = "Microsoft"
         elif "deepseek" in model_name:
             suffix = "DeepSeek"
-        else:
-            suffix = ""
+        elif "deepseek" in model_name:
+            suffix = "DeepSeek"
+        elif "gemma" in model_name:
+            suffix = "Gemma"
         return f"{model_name}@{suffix}" if suffix else model_name
 
     # Add new models

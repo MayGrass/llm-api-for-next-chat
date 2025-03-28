@@ -16,4 +16,4 @@ RUN pip install -U pip && pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 5000
 
-CMD ["uvicorn", "main:app", "--loop" ,"asyncio", "--host", "0.0.0.0", "--port", "5000"]
+CMD ["uvicorn", "main:app", "--loop" ,"asyncio", "--host", "0.0.0.0", "--port", "5000", "--timeout-keep-alive", "300"]
