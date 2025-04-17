@@ -28,12 +28,15 @@ services:
       ANTHROPIC_URL: http://llm-api-for-next-chat:5000/api/anthropic
       DEEPSEEK_URL: http://llm-api-for-next-chat:5000/api/openai/v1
       CUSTOM_MODELS: "-all,\
+        o4-mini@OpenAI,\
         o3-mini@OpenAI,\
         o1-preview@OpenAI,\
+        o1@OpenAI,\
         o1-mini@OpenAI,\
+        gpt-4.1@OpenAI,\
+        gpt-4.1-mini@OpenAI,\
         gpt-4o@OpenAI,\
         gpt-4o-mini@OpenAI,\
-        gpt-4@OpenAI,\
         gpt-3.5@OpenAI,\
         gemma-2-27b@Gemma,\
         gemma-2-9b@Gemma,\
