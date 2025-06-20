@@ -49,7 +49,7 @@ class TheB_AI_Register:
         """Generates a temporary email using webscout."""
 
         try:
-            client = tempid.Client()
+            client = tempid.TempMail()
             domains = await client.get_domains()
             email = (await client.create_email(domain=domains[0].name)).email
             color_print(f"Temporary email created: {email}", color="green")
@@ -81,7 +81,7 @@ class TheB_AI_Register:
 
         async def get_verification_link() -> str:
             try:
-                client = tempid.Client()
+                client = tempid.TempMail()
                 color_print("Waiting for the verification email...", color="yellow")
                 while True:
                     messages = await client.get_messages(email)

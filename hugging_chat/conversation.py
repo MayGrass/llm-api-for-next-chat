@@ -108,11 +108,10 @@ class HuggingChat_RE:
         return response_json["conversationId"]
 
     async def _find_message_id(self) -> str:
-        url = f"{self.chat_conversation_url}/{self.conversation_id}/__data.json?x-sveltekit-invalidated=11"
+        url = f"{self.hugging_face_url}/chat/api/v2/conversations/{self.conversation_id}"
         response = await self.async_client.get(url, headers=self.headers)
         response.raise_for_status()
-        response_json = json.loads(response.text.split("\n")[0])
-        message_id = response_json["nodes"][1]["data"][3]
+        message_id = response.json()["json"]["messages"][0]["id"]
         color_print(f"Initialised Message ID: {message_id}", "green")
         return message_id
 

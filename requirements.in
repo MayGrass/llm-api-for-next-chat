@@ -1,13 +1,13 @@
 fastapi[standard]
 pydantic>=2.7
 fake-useragent
-webscout==3.5
+webscout
 aiohttp>=3.10.11
 tls-client
 pillow
 environs
 ruamel.yaml
-seleniumbase
+seleniumbase==4.36.5
 python3-xlib
 pyautogui
 numpy

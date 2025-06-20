@@ -91,14 +91,14 @@ class TheB_AI_RE:
         balance = 0.0
         need_change_api_key = False
         if response.status_code == 401:
-            color_print("Blance check unauthorized. Changing API token.", "yellow")
+            color_print("Balance check unauthorized. Changing API token.", "yellow")
             need_change_api_key = True
         elif response.status_code == 200:
             response_json = response.json()
             balance = float(response_json["data"]["balance"])
             color_print(f"Current Balance: {balance}", "blue")
             if balance <= 0.0:
-                color_print("Blance out of funds. Changing API token.", "yellow")
+                color_print("Balance out of funds. Changing API token.", "yellow")
                 need_change_api_key = True
         else:
             response.raise_for_status()
