@@ -35,7 +35,7 @@ docker compose up -d
 
 1. 使用本專案預設的 docker compose 同時啟動 NextChat 前端與本後端。
 2. 前端已預設連接本專案後端，無需再手動設定 API 端點。
-3. 開啟 http://localhost:3030，即可直接開始對話。
+3. 開啟 http://localhost:3030 ，即可直接開始對話。
 
 ---
 
