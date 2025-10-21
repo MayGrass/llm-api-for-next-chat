@@ -1,12 +1,12 @@
-FROM python:3.11
+FROM python:3.11-slim
 
 # install chrome and xvfb
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list \
-    && apt-get update \
-    && apt-get install google-chrome-stable xvfb -y \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome-keyring.gpg \
+#     && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list \
+#     && apt-get update \
+#     && apt-get install google-chrome-stable xvfb -y \
+#     && apt-get clean \
+#     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 

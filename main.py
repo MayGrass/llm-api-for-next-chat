@@ -25,10 +25,8 @@ from schemas import (
     Content,
     ChunkJson,
 )
-from theb_ai.conversation import TheB_AI_RE
 from hugging_chat.conversation import HuggingChat_RE
 from chatgpt_web.conversation import ChatGPT_Web_RE
-from deepseek_web.conversation import Deepseek_Web_RE
 from utility import color_print, get_openai_chunk_response, get_openai_chunk_response_end, get_response_headers
 
 env = Env()
@@ -37,10 +35,12 @@ env.read_env()
 API_HOST = env("API_HOST", "http://localhost:5000")
 
 async_client = httpx.AsyncClient()
-theb_ai = TheB_AI_RE(async_client)
+# theb_ai = TheB_AI_RE(async_client)
+theb_ai = None
 hf_chat = HuggingChat_RE(async_client)
 chatgpt_web = ChatGPT_Web_RE()
-deepseek_web = Deepseek_Web_RE()
+# deepseek_web = Deepseek_Web_RE()
+deepseek_web = None
 
 
 @asynccontextmanager
@@ -125,7 +125,7 @@ async def openai_chat_completions(
         [jsonable_encoder(message, exclude_unset=True) for message in comletions_json_data.messages], ensure_ascii=False
     )
 
-    supported_prefixes = {"gpt", "o1", "o3", "o4"}
+    supported_prefixes = {"gpt-3.5", "gpt-4", "gpt-5", "o1", "o3", "o4"}
     if any(model.startswith(prefix) for prefix in supported_prefixes):
         if not env.bool("USE_CHATGPT_WEB", True):
             # reverse to openai completions
@@ -204,7 +204,7 @@ async def openai_chat_completions(
                     yield f"data: {openai_data.model_dump_json(exclude_unset=True)}\n\n"
 
     # imitate to openai completions response
-    elif model in theb_ai.model_key_mapping.values():
+    elif theb_ai and model in theb_ai.model_key_mapping.values():
         response = await theb_ai.conversation(
             model, messages_str, comletions_json_data.temperature, comletions_json_data.top_p
         )
@@ -275,7 +275,7 @@ async def openai_chat_completions(
 
             await hf_chat.delete_all_conversation()
 
-    elif model in deepseek_web.models:
+    elif deepseek_web and model in deepseek_web.models:
         response = await deepseek_web.completions(messages_str)
 
         async def content_generator():

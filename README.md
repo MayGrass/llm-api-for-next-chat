@@ -12,8 +12,8 @@
 
 - 🌐 ChatGPT Web
 - 🤗 HuggingChat
-- 🦾 TheB.AI
-- 🔍 DeepSeek（暫時失效）
+- ~~🦾 TheB.AI~~
+- ~~🔍 DeepSeek~~
 
 ## 一鍵部署（Docker Compose）
 

@@ -89,6 +89,11 @@ class CompletionsJsonData(BaseModel):
     tools: Optional[list[Tool]] = None
     top_p: int
 
+    @field_validator("model")
+    @classmethod
+    def remove_newlines(cls, model):
+        return model.replace("\n", "")
+
 
 class TheB_Data(BaseModel):
     id: str

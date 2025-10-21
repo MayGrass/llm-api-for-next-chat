@@ -1,8 +1,7 @@
 import time
 import uuid
-import textwrap
 from ruamel.yaml import YAML
-from ruamel.yaml.scalarstring import DoubleQuotedScalarString
+from ruamel.yaml.scalarstring import LiteralScalarString
 from typing import Literal
 from fake_useragent import UserAgent
 from schemas import Choices, Message, OpenAiData
@@ -56,9 +55,11 @@ def update_nextchat_custom_models(models: list[str], delete_models: list[str] = 
     with open("./docker-compose.yml", "r") as file:
         data = yaml.load(file)
 
-    current_custom_models = data["services"]["chatgpt-next-web"]["environment"]["CUSTOM_MODELS"].split(",")
+    raw_models = data["services"]["chatgpt-next-web"]["environment"]["CUSTOM_MODELS"]
+    current_custom_models = [m.strip() for m in str(raw_models).split(",") if m.strip()]
 
     def add_company_suffix(model_name: str) -> str:
+        suffix = ""
         if "llama" in model_name:
             suffix = "Meta"
         elif "gpt" in model_name or "o1" in model_name:
@@ -79,10 +80,34 @@ def update_nextchat_custom_models(models: list[str], delete_models: list[str] = 
             suffix = "Microsoft"
         elif "deepseek" in model_name:
             suffix = "DeepSeek"
-        elif "deepseek" in model_name:
-            suffix = "DeepSeek"
         elif "gemma" in model_name:
             suffix = "Gemma"
+        elif "glm" in model_name:
+            suffix = "ZhipuAI"
+        elif "kat" in model_name:
+            suffix = "Kwaipilot"
+        elif "kimi" in model_name:
+            suffix = "KimiAI"
+        elif "ernie" in model_name:
+            suffix = "Baidu"
+        elif "apertus" in model_name:
+            suffix = "Apertus"
+        elif "smol" in model_name:
+            suffix = "HuggingFaceTB"
+        elif "aya" in model_name or "command" in model_name:
+            suffix = "CohereLabs"
+        elif "baichuan" in model_name:
+            suffix = "BaichuanAI"
+        elif "afm" in model_name:
+            suffix = "ArceeAI"
+        elif "marin" in model_name:
+            suffix = "Marin"
+        elif "lunaris" in model_name or "euryale" in model_name or "stheno" in model_name:
+            suffix = "Sao10K"
+        elif "arch-router" in model_name:
+            suffix = "Katanemo"
+        elif "minimax" in model_name:
+            suffix = "MinimaxAI"
         return f"{model_name}@{suffix}" if suffix else model_name
 
     # Add new models
@@ -96,21 +121,11 @@ def update_nextchat_custom_models(models: list[str], delete_models: list[str] = 
         if model in current_custom_models:
             current_custom_models.remove(model)
 
-    custom_models_str = ",\\\n".join(current_custom_models)
-    # Add proper indentation to the custom models
-    indented_custom_models = textwrap.indent(custom_models_str, "        ")[8:]
-    data["services"]["chatgpt-next-web"]["environment"]["CUSTOM_MODELS"] = DoubleQuotedScalarString(
-        indented_custom_models
-    )
+    custom_models_str = ",\n".join(current_custom_models)
+    data["services"]["chatgpt-next-web"]["environment"]["CUSTOM_MODELS"] = LiteralScalarString(custom_models_str)
 
-    # yaml dump file won't escape \n and \\ properly, write the file and read it again then replace the escaped characters and write it back
     with open("docker-compose.yml", "w") as file:
         yaml.dump(data, file)
-    with open("docker-compose.yml", "r") as file:
-        file_content = file.read()
-    file_content = file_content.replace("\\n", "\n").replace("\\\\", "\\")
-    with open("docker-compose.yml", "w") as file:
-        file.write(file_content)
 
     open("scripts/update_signal", "w").close()  # Create a signal file to trigger the update
     color_print("Updated custom models in docker-compose.yml", "green")

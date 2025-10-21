@@ -17,7 +17,7 @@ class HuggingChat_RE:
 
     def __init__(self, async_client: httpx.AsyncClient = None) -> None:
         self.headers = {
-            "Cookie": f"hf-chat={self.hf_chat}",
+            "Cookie": f"hf-chat={self.hf_chat};token={self.hf_chat_token}",
             "User-Agent": get_user_agent(),
             "Origin": self.hugging_face_url,
         }
@@ -28,6 +28,10 @@ class HuggingChat_RE:
 
     @property
     def hf_chat(self) -> str:
+        return os.environ.get("HUGGING_CHAT")
+
+    @property
+    def hf_chat_token(self) -> str:
         return os.environ.get("HUGGING_CHAT_TOKEN")
 
     @staticmethod
@@ -64,7 +68,7 @@ class HuggingChat_RE:
         model_key_mapping = {}
         for model in models_list:
             if model.get("description"):
-                model_name = model["name"]
+                model_name = model["id"]
                 key = model_name.split("/")[-1].lower()
                 model_key_mapping[key] = model_name
 
@@ -154,9 +158,6 @@ class HuggingChat_RE:
                         "inputs": query,
                         "id": self.message_id,
                         "is_retry": False,
-                        "is_continue": False,
-                        "web_search": self.web_search,
-                        "tools": self.config,
                     },
                     ensure_ascii=False,
                 ),
